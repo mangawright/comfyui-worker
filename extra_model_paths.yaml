@@ -1,0 +1,11 @@
+# 入れ物の ComfyUI が、RunPod のネットワークボリュームのモデルを読むための設定（Dockerfile が /comfyui に置く）
+runpod_volume:
+    base_path: /runpod-volume/
+    checkpoints: models/checkpoints
+    loras: models/loras
+    controlnet: models/controlnet
+    ipadapter: models/ipadapter
+    clip_vision: models/clip_vision
+    upscale_models: models/upscale_models
+    ultralytics_bbox: models/ultralytics/bbox
+    vae: models/vae
