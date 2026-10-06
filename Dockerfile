@@ -1,9 +1,10 @@
 # RunPod serverless worker: ComfyUI (API only) + a small job handler.
 # Built by RunPod from this repository (GitHub integration). The build step must finish within 30 minutes,
 # so we start from an image that already has PyTorch + CUDA.
-FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+FROM pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
 
-ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+# PyTorch lives in the system Python of the base image; installing into it is fine inside this container
+ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PIP_BREAK_SYSTEM_PACKAGES=1
 RUN apt-get update && apt-get install -y --no-install-recommends git wget libgl1 libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
