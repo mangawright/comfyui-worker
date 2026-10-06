@@ -23,6 +23,9 @@ RUN cd /comfyui/custom_nodes \
 # Models (public weights, unmodified; see /licenses/NOTICE.md). File names are fixed because requests select models by name.
 RUN wget -q -O /comfyui/models/checkpoints/animagine-xl-4.0.safetensors \
       https://huggingface.co/cagliostrolab/animagine-xl-4.0/resolve/main/animagine-xl-4.0.safetensors
+# Arthemy Comics XL v2.0 by Arthemy (Civitai model 462532, version 1019183). Credit to the author is required.
+RUN wget -q -O /comfyui/models/checkpoints/arthemyComicsXL_v20.safetensors \
+      https://civitai.com/api/download/models/1019183
 RUN wget -q -O /comfyui/models/controlnet/controlnet-union-sdxl-1.0-promax.safetensors \
       https://huggingface.co/xinsir/controlnet-union-sdxl-1.0/resolve/main/diffusion_pytorch_model_promax.safetensors
 RUN mkdir -p /comfyui/models/ipadapter /comfyui/models/ultralytics/bbox \
