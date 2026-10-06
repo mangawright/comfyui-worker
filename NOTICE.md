@@ -16,6 +16,13 @@ Full license texts are in /licenses (CreativeML Open RAIL++-M, GPL-3.0, AGPL-3.0
 | upscale_models/RealESRGAN_x4plus_anime_6B.pth | https://github.com/xinntao/Real-ESRGAN | BSD 3-Clause License |
 | ultralytics/bbox/face_yolov8n.pt, hand_yolov8n.pt | https://huggingface.co/Bingsu/adetailer | See the model card (trained with Ultralytics YOLOv8, AGPL-3.0) |
 
+### Models in the image built from Dockerfile.next
+
+| File (under /comfyui/models) | Source | License |
+|---|---|---|
+| diffusion_models/z_image_turbo_bf16.safetensors, text_encoders/qwen_3_4b.safetensors, vae/ae.safetensors | Z-Image Turbo by Tongyi-MAI (Alibaba) — https://huggingface.co/Tongyi-MAI/Z-Image-Turbo (ComfyUI repackage: https://huggingface.co/Comfy-Org/z_image_turbo) | Apache License 2.0 |
+| diffusion_models/flux-2-klein-4b.safetensors, vae/flux2-vae.safetensors | FLUX.2 [klein] 4B by Black Forest Labs — https://huggingface.co/black-forest-labs/FLUX.2-klein-4B (ComfyUI repackage: https://huggingface.co/Comfy-Org/vae-text-encorder-for-flux-klein-4b) | Apache License 2.0 |
+
 ## Software
 
 | Software | Source | License |

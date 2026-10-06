@@ -1,0 +1,40 @@
+# RunPod serverless worker for the newer prose-prompt model families: Z-Image Turbo and FLUX.2 [klein] 4B.
+# Same ComfyUI and handler as ./Dockerfile; only the models differ. Both models share the Qwen3-4B text encoder.
+# Built by RunPod from this repository (GitHub integration, Dockerfile path: Dockerfile.next).
+FROM pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
+
+# PyTorch lives in the system Python of the base image; installing into it is fine inside this container
+ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PIP_BREAK_SYSTEM_PACKAGES=1
+RUN apt-get update && apt-get install -y --no-install-recommends git wget libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# ComfyUI (same version as ./Dockerfile)
+ARG COMFY_REF=v0.33.1
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui && cd /comfyui && git checkout ${COMFY_REF} \
+    && pip install -r /comfyui/requirements.txt
+
+# Models (Apache-2.0, unmodified; see /licenses/NOTICE.md). File names are fixed because requests select models by name.
+RUN wget -q -O /comfyui/models/diffusion_models/z_image_turbo_bf16.safetensors \
+      https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/diffusion_models/z_image_turbo_bf16.safetensors
+RUN wget -q -O /comfyui/models/diffusion_models/flux-2-klein-4b.safetensors \
+      https://huggingface.co/Comfy-Org/vae-text-encorder-for-flux-klein-4b/resolve/main/split_files/diffusion_models/flux-2-klein-4b.safetensors
+RUN wget -q -O /comfyui/models/text_encoders/qwen_3_4b.safetensors \
+      https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/text_encoders/qwen_3_4b.safetensors
+RUN wget -q -O /comfyui/models/vae/ae.safetensors \
+      https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/vae/ae.safetensors \
+    && wget -q -O /comfyui/models/vae/flux2-vae.safetensors \
+      https://huggingface.co/Comfy-Org/vae-text-encorder-for-flux-klein-4b/resolve/main/split_files/vae/flux2-vae.safetensors
+
+# Optional extra models from a RunPod network volume (/runpod-volume/models), if one is attached
+COPY extra_model_paths.yaml /comfyui/extra_model_paths.yaml
+
+# Third-party licenses (redistribution notices)
+COPY NOTICE.md /licenses/NOTICE.md
+COPY licenses/ /licenses/
+
+RUN pip install runpod requests
+COPY handler.py /handler.py
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+CMD ["/start.sh"]
