@@ -13,12 +13,13 @@ ARG COMFY_REF=v0.33.1
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui && cd /comfyui && git checkout ${COMFY_REF} \
     && pip install -r /comfyui/requirements.txt
 
-# Custom nodes: IP-Adapter, Impact Pack (detailer) and its subpack (bbox detector)
+# Custom nodes: IP-Adapter, Impact Pack (detailer), and a small ONNX bbox detector for the detailer
+# (custom_nodes/onnx_bbox_detector: runs YOLO-style ONNX models with onnxruntime, no Ultralytics)
 RUN cd /comfyui/custom_nodes \
     && git clone --depth 1 https://github.com/cubiq/ComfyUI_IPAdapter_plus.git \
     && git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Impact-Pack.git \
-    && git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git \
-    && pip install segment-anything scikit-image piexif transformers opencv-python-headless scipy dill matplotlib "ultralytics>=8.3.162"
+    && pip install segment-anything scikit-image piexif transformers opencv-python-headless scipy dill matplotlib onnxruntime
+COPY custom_nodes/onnx_bbox_detector /comfyui/custom_nodes/onnx_bbox_detector
 
 # Models (public weights, unmodified; see /licenses/NOTICE.md). File names are fixed because requests select models by name.
 RUN wget -q -O /comfyui/models/checkpoints/animagine-xl-4.0.safetensors \
@@ -28,15 +29,17 @@ RUN wget -q -O /comfyui/models/checkpoints/arthemyComicsXL_v20.safetensors \
       https://civitai.com/api/download/models/1019183
 RUN wget -q -O /comfyui/models/controlnet/controlnet-union-sdxl-1.0-promax.safetensors \
       https://huggingface.co/xinsir/controlnet-union-sdxl-1.0/resolve/main/diffusion_pytorch_model_promax.safetensors
-RUN mkdir -p /comfyui/models/ipadapter /comfyui/models/ultralytics/bbox \
+RUN mkdir -p /comfyui/models/ipadapter /comfyui/models/onnx_bbox \
     && wget -q -O /comfyui/models/clip_vision/CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors \
       https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors \
     && wget -q -O /comfyui/models/ipadapter/ip-adapter-plus-face_sdxl_vit-h.safetensors \
       https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter-plus-face_sdxl_vit-h.safetensors \
     && wget -q -O /comfyui/models/upscale_models/RealESRGAN_x4plus_anime_6B.pth \
       https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth \
-    && wget -q -O /comfyui/models/ultralytics/bbox/face_yolov8n.pt https://huggingface.co/Bingsu/adetailer/resolve/main/face_yolov8n.pt \
-    && wget -q -O /comfyui/models/ultralytics/bbox/hand_yolov8n.pt https://huggingface.co/Bingsu/adetailer/resolve/main/hand_yolov8n.pt
+    && wget -q -O /comfyui/models/onnx_bbox/face_anime_v1.4_s.onnx \
+      https://huggingface.co/deepghs/anime_face_detection/resolve/main/face_detect_v1.4_s/model.onnx \
+    && wget -q -O /comfyui/models/onnx_bbox/hand_anime_v1.0_s.onnx \
+      https://huggingface.co/deepghs/anime_hand_detection/resolve/main/hand_detect_v1.0_s/model.onnx
 
 # Optional extra models from a RunPod network volume (/runpod-volume/models), if one is attached
 COPY extra_model_paths.yaml /comfyui/extra_model_paths.yaml

@@ -7,5 +7,5 @@ runpod_volume:
     ipadapter: models/ipadapter
     clip_vision: models/clip_vision
     upscale_models: models/upscale_models
-    ultralytics_bbox: models/ultralytics/bbox
+    onnx_bbox: models/onnx_bbox
     vae: models/vae
