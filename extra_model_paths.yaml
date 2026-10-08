@@ -9,3 +9,9 @@ runpod_volume:
     upscale_models: models/upscale_models
     onnx_bbox: models/onnx_bbox
     vae: models/vae
+
+# 入れ物の中のモデルの場所も、もう一度書いておく。IP-Adapter のノードは、ここで ipadapter が先に登録されていると、
+# 入れ物の中の models/ipadapter を探さなくなる（ネットワークボリュームの場所だけになる）ため
+comfyui_image:
+    base_path: /comfyui/
+    ipadapter: models/ipadapter
