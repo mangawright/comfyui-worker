@@ -22,6 +22,8 @@ COMFY_URL = os.environ.get("COMFY_URL", "http://127.0.0.1:8188")
 READY_TIMEOUT_SEC = int(os.environ.get("COMFY_READY_TIMEOUT", "900"))
 REQUEST_TIMEOUT_SEC = int(os.environ.get("COMFY_REQUEST_TIMEOUT", "1800"))
 POLL_SEC = 0.5
+# GPU のメモリが足りなくて失敗したときは、ComfyUI のモデルとメモリを空けてから、もう1回だけやり直す
+OOM_WORDS = ("out of memory", "allocation on device")
 
 session = requests.Session()
 
@@ -40,6 +42,18 @@ def wait_until_ready() -> None:
 
 
 def run_prompt(inp: dict) -> dict:
+    out = run_prompt_once(inp)
+    if any(w in str(out.get("error", "")).lower() for w in OOM_WORDS):
+        try:
+            session.post(f"{COMFY_URL}/free", json={"unload_models": True, "free_memory": True}, timeout=60)
+            time.sleep(3)
+        except requests.RequestException:
+            pass
+        out = run_prompt_once(inp)
+    return out
+
+
+def run_prompt_once(inp: dict) -> dict:
     for img in inp.get("images") or []:
         data = base64.b64decode(str(img["image"]).split(",", 1)[-1])
         r = session.post(
