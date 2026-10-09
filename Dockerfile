@@ -41,6 +41,21 @@ RUN mkdir -p /comfyui/models/ipadapter /comfyui/models/onnx_bbox \
     && wget -q -O /comfyui/models/onnx_bbox/hand_anime_v1.0_s.onnx \
       https://huggingface.co/deepghs/anime_hand_detection/resolve/main/hand_detect_v1.0_s/model.onnx
 
+# LoRAs for anatomy, hands and details (Civitai; permissions allow selling generated images and use on generation services).
+# Each download is checked against the SHA256 published by Civitai.
+RUN mkdir -p /comfyui/models/loras \
+    && wget -q -O /comfyui/models/loras/badanatomy_SDXL_negative_LORA_SeaArtXL_v1.safetensors \
+      https://civitai.com/api/download/models/480129 \
+    && wget -q -O /comfyui/models/loras/add-detail-xl.safetensors \
+      https://civitai.com/api/download/models/135867 \
+    && wget -q -O /comfyui/models/loras/DetailN_XL.safetensors \
+      https://civitai.com/api/download/models/1486887 \
+    && cd /comfyui/models/loras && printf '%s  %s\n' \
+      c82230d282d4432e4129ee1ba3cf8e00247b77ecd871ab8368567f7c7f35e80c badanatomy_SDXL_negative_LORA_SeaArtXL_v1.safetensors \
+      0d9bd1b873a7863e128b4672e3e245838858f71469a3cec58123c16c06f83bd7 add-detail-xl.safetensors \
+      5450c6973c3c020e594473f7d560d672833caa3448b5856b9f1913ac75c419dc DetailN_XL.safetensors \
+      | sha256sum -c -
+
 # Optional extra models from a RunPod network volume (/runpod-volume/models), if one is attached
 COPY extra_model_paths.yaml /comfyui/extra_model_paths.yaml
 

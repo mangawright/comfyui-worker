@@ -1,0 +1,41 @@
+# RunPod serverless worker for Qwen-Image-2512 (Apache-2.0), with the Qwen-Image-2512-Lightning LoRAs (Apache-2.0)
+# for 4- and 8-step generation. Same ComfyUI and handler as ./Dockerfile; only the models differ.
+# The fp8 model (20.4 GB) fits a 24 GB GPU; ComfyUI unloads the text encoder (9.4 GB) when the diffusion model needs the memory.
+# Built by RunPod from this repository (GitHub integration, Dockerfile path: Dockerfile.qwen).
+FROM pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
+
+ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PIP_BREAK_SYSTEM_PACKAGES=1
+RUN apt-get update && apt-get install -y --no-install-recommends git wget libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# ComfyUI (same version as ./Dockerfile)
+ARG COMFY_REF=v0.33.1
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui && cd /comfyui && git checkout ${COMFY_REF} \
+    && pip install -r /comfyui/requirements.txt
+
+# Models (Apache-2.0, unmodified; see /licenses/NOTICE.md). File names are fixed because requests select models by name.
+RUN wget -q -O /comfyui/models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors \
+      https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors
+RUN wget -q -O /comfyui/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors \
+      https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors \
+    && wget -q -O /comfyui/models/vae/qwen_image_vae.safetensors \
+      https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors
+RUN mkdir -p /comfyui/models/loras \
+    && wget -q -O /comfyui/models/loras/Qwen-Image-2512-Lightning-4steps-V1.0-bf16.safetensors \
+      https://huggingface.co/lightx2v/Qwen-Image-2512-Lightning/resolve/main/Qwen-Image-2512-Lightning-4steps-V1.0-bf16.safetensors \
+    && wget -q -O /comfyui/models/loras/Qwen-Image-2512-Lightning-8steps-V1.0-bf16.safetensors \
+      https://huggingface.co/lightx2v/Qwen-Image-2512-Lightning/resolve/main/Qwen-Image-2512-Lightning-8steps-V1.0-bf16.safetensors
+
+# Optional extra models from a RunPod network volume (/runpod-volume/models), if one is attached
+COPY extra_model_paths.yaml /comfyui/extra_model_paths.yaml
+
+# Third-party licenses (redistribution notices)
+COPY NOTICE.md /licenses/NOTICE.md
+COPY licenses/ /licenses/
+
+RUN pip install runpod requests
+COPY handler.py /handler.py
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+CMD ["/start.sh"]
