@@ -1,5 +1,6 @@
-# RunPod serverless worker for the newer prose-prompt model families: Z-Image Turbo and FLUX.2 [klein] 4B.
-# Same ComfyUI and handler as ./Dockerfile; only the models differ. Both models share the Qwen3-4B text encoder.
+# RunPod serverless worker for the newer prose-prompt model families: Z-Image Turbo, FLUX.2 [klein] 4B and Neta Lumina.
+# Same ComfyUI and handler as ./Dockerfile; only the models differ. Z-Image and FLUX.2 share the Qwen3-4B text encoder;
+# Neta Lumina uses Gemma 2 2B and the same VAE (ae) as Z-Image.
 # Built by RunPod from this repository (GitHub integration, Dockerfile path: Dockerfile.next).
 FROM pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
 
@@ -24,6 +25,12 @@ RUN wget -q -O /comfyui/models/vae/ae.safetensors \
       https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/vae/ae.safetensors \
     && wget -q -O /comfyui/models/vae/flux2-vae.safetensors \
       https://huggingface.co/Comfy-Org/vae-text-encorder-for-flux-klein-4b/resolve/main/split_files/vae/flux2-vae.safetensors
+
+# Neta Lumina v1.0 (Apache-2.0) and its text encoder Gemma 2 2B (Gemma Terms of Use; see /licenses/NOTICE.md)
+RUN wget -q -O /comfyui/models/diffusion_models/neta-lumina-v1.0.safetensors \
+      https://huggingface.co/neta-art/Neta-Lumina/resolve/main/Unet/neta-lumina-v1.0.safetensors \
+    && wget -q -O /comfyui/models/text_encoders/gemma_2_2b_fp16.safetensors \
+      "https://huggingface.co/neta-art/Neta-Lumina/resolve/main/Text%20Encoder/gemma_2_2b_fp16.safetensors"
 
 # Optional extra models from a RunPod network volume (/runpod-volume/models), if one is attached
 COPY extra_model_paths.yaml /comfyui/extra_model_paths.yaml

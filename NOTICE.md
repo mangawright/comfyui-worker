@@ -23,6 +23,8 @@ Full license texts are in /licenses (CreativeML Open RAIL++-M, GPL-3.0, Apache-2
 |---|---|---|
 | diffusion_models/z_image_turbo_bf16.safetensors, text_encoders/qwen_3_4b.safetensors, vae/ae.safetensors | Z-Image Turbo by Tongyi-MAI (Alibaba) — https://huggingface.co/Tongyi-MAI/Z-Image-Turbo (ComfyUI repackage: https://huggingface.co/Comfy-Org/z_image_turbo) | Apache License 2.0 |
 | diffusion_models/flux-2-klein-4b.safetensors, vae/flux2-vae.safetensors | FLUX.2 [klein] 4B by Black Forest Labs — https://huggingface.co/black-forest-labs/FLUX.2-klein-4B (ComfyUI repackage: https://huggingface.co/Comfy-Org/vae-text-encorder-for-flux-klein-4b) | Apache License 2.0 |
+| diffusion_models/neta-lumina-v1.0.safetensors | Neta Lumina v1.0 by Neta.art Lab — https://huggingface.co/neta-art/Neta-Lumina (fine-tuned from Lumina-Image 2.0 by Alpha-VLLM) | Apache License 2.0 |
+| text_encoders/gemma_2_2b_fp16.safetensors | Gemma 2 2B by Google, as distributed with Neta Lumina — https://huggingface.co/neta-art/Neta-Lumina | Gemma Terms of Use (https://ai.google.dev/gemma/terms) and the Gemma Prohibited Use Policy (https://ai.google.dev/gemma/prohibited_use_policy); provided under and subject to those terms |
 
 ## Software
 
