@@ -24,6 +24,12 @@ COPY custom_nodes/onnx_bbox_detector /comfyui/custom_nodes/onnx_bbox_detector
 # Models (public weights, unmodified; see /licenses/NOTICE.md). File names are fixed because requests select models by name.
 RUN wget -q -O /comfyui/models/checkpoints/animagine-xl-4.0.safetensors \
       https://huggingface.co/cagliostrolab/animagine-xl-4.0/resolve/main/animagine-xl-4.0.safetensors
+# AAM XL (Anime Mix) by Lykon and Kivotos XL 2.0 by Yodayo (both Fair AI Public License 1.0-SD; the Civitai permissions allow
+# use on generation services). Used unmodified.
+RUN wget -q -O /comfyui/models/checkpoints/AAM_XL_Anime_Mix.safetensors \
+      https://huggingface.co/Lykon/AAM_XL_AnimeMix/resolve/main/AAM_XL_Anime_Mix.safetensors
+RUN wget -q -O /comfyui/models/checkpoints/kivotos-xl-2.0.safetensors \
+      https://huggingface.co/yodayo-ai/kivotos-xl-2.0/resolve/main/kivotos-xl-2.0.safetensors
 # Arthemy Comics XL v2.0 by Arthemy (Civitai model 462532, version 1019183). Credit to the author is required.
 RUN wget -q -O /comfyui/models/checkpoints/arthemyComicsXL_v20.safetensors \
       https://civitai.com/api/download/models/1019183
