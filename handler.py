@@ -3,8 +3,10 @@
 次の2種類の仕事を受け付ける：
     {"input": {"action": "object_info"}}
         → {"object_info": <ComfyUI の /object_info の答え>}（ワークフローの組み立てに使う。アプリが覚えておく）
-    {"input": {"action": "prompt", "workflow": {...}, "images": [{"name": "x.png", "image": "<PNG の base64>"}], "output": "<ノードの ID>"}}
+    {"input": {"action": "prompt", "workflow": {...}, "images": [{"name": "x.png", "image": "<PNG の base64>"}], "output": "<ノードの ID>",
+               "files": [{"path": "loras/<フォルダ>/<名前>.safetensors", "url": "<期限つきの URL>"}]}}
         → {"images": ["<PNG の base64>", ...]}
+    files は描く前に models/ の下へ取ってくる追加のモデル（無くてもよい）。同じ入れ物の中では1回だけ取り、多くなったら古いものから消す。
 1回ごとに別の GPU で動くことがあるので、画像を上げる・ワークフローを送る・結果を受け取るを、この1つの仕事の中で行う。
 失敗したときは {"error": "<わけ>"} を返す。
 """
@@ -14,6 +16,7 @@ from __future__ import annotations
 import base64
 import os
 import time
+from pathlib import Path, PurePosixPath
 
 import requests
 import runpod
@@ -24,6 +27,9 @@ REQUEST_TIMEOUT_SEC = int(os.environ.get("COMFY_REQUEST_TIMEOUT", "1800"))
 POLL_SEC = 0.5
 # GPU のメモリが足りなくて失敗したときは、ComfyUI のモデルとメモリを空けてから、もう1回だけやり直す
 OOM_WORDS = ("out of memory", "allocation on device")
+# 取ってきた追加のモデルの置き場と、1つのフォルダに残しておく数
+MODELS_DIR = Path(os.environ.get("COMFY_MODELS", "/comfyui/models"))
+KEEP_FILES = int(os.environ.get("KEEP_FILES", "40"))
 
 session = requests.Session()
 
@@ -53,7 +59,40 @@ def run_prompt(inp: dict) -> dict:
     return out
 
 
+def fetch_files(files: list) -> str | None:
+    """追加のモデルを models/ の下へ取ってくる。失敗したらわけを返す。"""
+    for f in files:
+        rel = PurePosixPath(str(f.get("path") or ""))
+        if rel.parts[:1] != ("loras",) or ".." in rel.parts or rel.suffix != ".safetensors" or len(rel.parts) < 3:
+            # loras/<フォルダ>/<名前> だけ（入れ物に入っているモデルの所には置かない・消さない）
+            return f"取ってこられないファイルの置き場です: {rel}"
+        dest = MODELS_DIR / Path(*rel.parts)
+        if dest.exists():
+            os.utime(dest)
+            continue
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(".part")
+        try:
+            with session.get(str(f["url"]), stream=True, timeout=(30, 600)) as r:
+                r.raise_for_status()
+                with tmp.open("wb") as out:
+                    for chunk in r.iter_content(1 << 20):
+                        out.write(chunk)
+            tmp.replace(dest)
+        except (requests.RequestException, OSError) as e:
+            tmp.unlink(missing_ok=True)
+            return f"ファイルを取ってこられませんでした（{rel}）: {e}"
+        # 多くなったら、使っていない古いものから消す（入れ物のディスクを使い切らないように）
+        kept = sorted(dest.parent.glob("*.safetensors"), key=lambda p: p.stat().st_mtime, reverse=True)
+        for old in kept[KEEP_FILES:]:
+            old.unlink(missing_ok=True)
+    return None
+
+
 def run_prompt_once(inp: dict) -> dict:
+    err = fetch_files(inp.get("files") or [])
+    if err:
+        return {"error": err}
     for img in inp.get("images") or []:
         data = base64.b64decode(str(img["image"]).split(",", 1)[-1])
         r = session.post(

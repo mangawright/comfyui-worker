@@ -35,6 +35,16 @@ Full license texts are in /licenses (CreativeML Open RAIL++-M, Fair AI Public Li
 | diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors | Qwen-Image-Edit-2511 by Qwen (Alibaba) — https://huggingface.co/Qwen/Qwen-Image-Edit-2511 (ComfyUI repackage: https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI) | Apache License 2.0 |
 | loras/Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors, loras/Qwen-Image-Edit-2511-Lightning-8steps-V1.0-bf16.safetensors | Qwen-Image-Edit-2511-Lightning by LightX2V / ModelTC — https://huggingface.co/lightx2v/Qwen-Image-Edit-2511-Lightning | Apache License 2.0 |
 
+### The image built from Dockerfile.train
+
+This image contains no model weights. Base models are downloaded at run time from their own sources
+(the SDXL checkpoints above, https://huggingface.co/Tongyi-MAI/Z-Image-Turbo with https://huggingface.co/ostris/zimage_turbo_training_adapter,
+https://huggingface.co/black-forest-labs/FLUX.2-klein-base-4B, https://huggingface.co/Qwen/Qwen-Image-2512), each under its own license.
+
+| Software | Source | License |
+|---|---|---|
+| ai-toolkit | https://github.com/ostris/ai-toolkit | MIT License |
+
 ## Software
 
 | Software | Source | License |

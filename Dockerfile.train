@@ -1,0 +1,24 @@
+# RunPod serverless worker that trains LoRAs (SDXL, Z-Image Turbo, FLUX.2 [klein] 4B, Qwen-Image 2512) with ai-toolkit (MIT).
+# The training settings come with each request; this image only holds the trainer and a small job handler.
+# Base models are downloaded on first use (Hugging Face / the URL in the request) and kept on the network volume, if one is attached.
+# Built by RunPod from this repository (GitHub integration, Dockerfile path: Dockerfile.train).
+FROM pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
+
+ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PIP_BREAK_SYSTEM_PACKAGES=1
+RUN apt-get update && apt-get install -y --no-install-recommends git wget libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# ai-toolkit, pinned to a known commit
+ARG AITK_REF=b69b98314557f7c8b08e11bbb14e48d959e6ab26
+RUN git clone https://github.com/ostris/ai-toolkit.git /ai-toolkit && cd /ai-toolkit && git checkout ${AITK_REF} \
+    && git submodule update --init --recursive \
+    && pip install -r requirements.txt
+
+# Third-party licenses (redistribution notices)
+COPY NOTICE.md /licenses/NOTICE.md
+COPY licenses/ /licenses/
+
+RUN pip install runpod requests
+COPY train_handler.py /train_handler.py
+
+CMD ["python", "/train_handler.py"]
