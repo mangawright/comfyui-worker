@@ -16,8 +16,8 @@ Full license texts are in /licenses (CreativeML Open RAIL++-M, Fair AI Public Li
 | ipadapter/ip-adapter-plus-face_sdxl_vit-h.safetensors | https://huggingface.co/h94/IP-Adapter | Apache License 2.0 |
 | clip_vision/CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors (renamed from models/image_encoder/model.safetensors) | https://huggingface.co/h94/IP-Adapter (OpenCLIP ViT-H-14, LAION-2B) | MIT License |
 | upscale_models/RealESRGAN_x4plus_anime_6B.pth | https://github.com/xinntao/Real-ESRGAN | BSD 3-Clause License |
-| onnx_bbox/face_anime_v1.4_s.onnx (renamed from face_detect_v1.4_s/model.onnx) | https://huggingface.co/deepghs/anime_face_detection | MIT License |
-| onnx_bbox/hand_anime_v1.0_s.onnx (renamed from hand_detect_v1.0_s/model.onnx) | https://huggingface.co/deepghs/anime_hand_detection | OpenRAIL (see the model card; its use-based restrictions apply to any use of this model) |
+| onnx_bbox/face_anime_v1.4_s.onnx (renamed from face_detect_v1.4_s/model.onnx) | https://huggingface.co/deepghs/anime_face_detection | MIT License as stated on the model page (no license text is published there). Trained with Ultralytics 8.0.20 (GPL-3.0), which is not in this image |
+| onnx_bbox/hand_anime_v1.0_s.onnx (renamed from hand_detect_v1.0_s/model.onnx) | https://huggingface.co/deepghs/anime_hand_detection | OpenRAIL as stated on the model page (no license text is published there). Trained with Ultralytics 8.0.20 (GPL-3.0), which is not in this image |
 
 ### Models in the image built from Dockerfile.next
 
