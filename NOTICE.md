@@ -8,10 +8,8 @@ Full license texts are in /licenses (CreativeML Open RAIL++-M, Fair AI Public Li
 
 | File (under /comfyui/models) | Source | License |
 |---|---|---|
-| checkpoints/animagine-xl-4.0.safetensors | https://huggingface.co/cagliostrolab/animagine-xl-4.0 | CreativeML Open RAIL++-M (full text: /licenses/CreativeML-Open-RAIL++-M.md). The use-based restrictions in Attachment A apply to any use of this model. |
 | checkpoints/animagine-xl-4.0-opt.safetensors | https://huggingface.co/cagliostrolab/animagine-xl-4.0 (animagine-xl-4.0-opt.safetensors) | CreativeML Open RAIL++-M (full text: /licenses/CreativeML-Open-RAIL++-M.md). Unmodified. The use-based restrictions in Attachment A apply to any use of this model. |
 | checkpoints/AAM_XL_Anime_Mix.safetensors | AAM XL (Anime Mix) by Lykon — https://huggingface.co/Lykon/AAM_XL_AnimeMix (Civitai model 269232) | Fair AI Public License 1.0-SD (full text: /licenses/FAIPL-1.0-SD.md). Unmodified. Civitai permissions: sell generated images, use on generation services |
-| checkpoints/kivotos-xl-2.0.safetensors | Kivotos XL 2.0 by Yodayo — https://huggingface.co/yodayo-ai/kivotos-xl-2.0 (Civitai model 549203) | Fair AI Public License 1.0-SD (full text: /licenses/FAIPL-1.0-SD.md). Unmodified. Civitai permissions: sell generated images, use on generation services |
 | checkpoints/arthemyComicsXL_v20.safetensors | Arthemy Comics XL v2.0 **by Arthemy** — https://civitai.com/models/462532/arthemy-comics-xl | CreativeML Open RAIL++-M with the Civitai addendum (permissions: sell generated images, use on generation services; the author must be credited). Full RAIL++-M text: /licenses/CreativeML-Open-RAIL++-M.md |
 | controlnet/controlnet-union-sdxl-1.0-promax.safetensors (renamed from diffusion_pytorch_model_promax.safetensors) | https://huggingface.co/xinsir/controlnet-union-sdxl-1.0 | Apache License 2.0 |
 | ipadapter/ip-adapter-plus-face_sdxl_vit-h.safetensors | https://huggingface.co/h94/IP-Adapter | Apache License 2.0 |
