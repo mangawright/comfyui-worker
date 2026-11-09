@@ -24,6 +24,9 @@ COPY custom_nodes/onnx_bbox_detector /comfyui/custom_nodes/onnx_bbox_detector
 # Models (public weights, unmodified; see /licenses/NOTICE.md). File names are fixed because requests select models by name.
 RUN wget -q -O /comfyui/models/checkpoints/animagine-xl-4.0.safetensors \
       https://huggingface.co/cagliostrolab/animagine-xl-4.0/resolve/main/animagine-xl-4.0.safetensors
+# Animagine XL 4.0 Opt (same repository and license as Animagine XL 4.0)
+RUN wget -q -O /comfyui/models/checkpoints/animagine-xl-4.0-opt.safetensors \
+      https://huggingface.co/cagliostrolab/animagine-xl-4.0/resolve/main/animagine-xl-4.0-opt.safetensors
 # AAM XL (Anime Mix) by Lykon and Kivotos XL 2.0 by Yodayo (both Fair AI Public License 1.0-SD; the Civitai permissions allow
 # use on generation services). Used unmodified.
 RUN wget -q -O /comfyui/models/checkpoints/AAM_XL_Anime_Mix.safetensors \
